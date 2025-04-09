@@ -82,4 +82,23 @@ Attention is the most dense and important feature of transformers, but for the s
 
 ![image](https://github.com/user-attachments/assets/1c635b42-70bc-44dd-8598-9544ade81ffe)
 
+Every "Add & Norm" block that you see, the original input is added back in, and it is again normalized. This has two benefits:
+
+1. It helps avoid the RNN exploding/vanishing gradient issue, especially when stacking many layers. <-- This is what "Nx" is. Nx stacks the "block" a constant (usually 6) number of times.
+2. It lets the model preserve useful information from earlier layers.
+
+FFNs is a feed forward neural network which is used to add non-linearity beyond just attention. Think of it like giving each token its own little mini neural network to process its meaning after gathering context from attention.
+
+One last thing. Let's cover the two blocks in the diagram: **Encoders and Decoders:**
+
+Encoder - the block which reads, parses, and encodes the input. 
+Decoder - the block with generates the output, one token at a time.
+
+Imagine the encoder as someone reading and understanding a full question. The decoder is the person generating an answer — but can only see what they’ve already said, and they occasionally glance at the question (encoder output) for context as they form the next word.
+
+**Attention is All You Need😎**
+
+
+
+
 
