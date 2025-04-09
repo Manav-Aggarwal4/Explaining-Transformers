@@ -1,34 +1,3 @@
-### Reinforcement Learning with Human Feedback: Process and Math.
-
-## First, I'll describe RLHF at a high level.
-
-Our goal is to improve the performance of a pre-trained LLM by incorporating human-feedback into the training process. This will allow us to produce outputs that align with human preferences and values.
-
-We begin with a pre-trained LLM (e.g. GPT-2)
-
-# Step 1: Create Preference Dataset
-We ask the LLM (called the policy) to produce responses based on what we want to fine-tune it for. For example, if we wanted to create an LLM to generate summary articles that human's find interesting, we would ask the LLM to produce multiple summaries for each article. Then, we'd get a human to choose which summary they prefer for each article. We've now created a preference dataset.
-
-# Step 2: Reward Model Training
-We train another **separate** transformer model on the preference dataset. This gives us a model that can predict which responses human would prefer (or summaries humans are more likely to enjoy in our example).
-
-# Step 3: Fine-Tuning
-Using the reward model, we train the policy model (the original LLM). The policy produces new texts/summaries and our reward model "scores" them. Then, our policy is optimized to maximize its score, and the process is repeated. That's everything in a RLHF pipeline!
-
-### Now, the math behind it all: 
-
-## Step by step:
-
-# Training the reward model:
-
-We must establish a pair-wise ranking loss function; given responses y1 and y2 to a prompt x where y1 is preferred over y2 (by a human labeler), we maximize our probability that preferred response y1 is given a larger reward than the poor response y2. This is the pair-wise ranking loss function mathematically: 
-<img width="353" alt="Screenshot 2025-03-13 at 6 54 58 PM" src="https://github.com/user-attachments/assets/95ce23c5-9fbd-42b6-b41d-29df5c1a9fd5" />
-
-where r is the current reward model, theta is the current parameters, and sigmoid is a softmax function to position the value between 0 and 1. The negative log function is commonly used in binary classification problems because it penalizes incorrect predictions more heavily as the confidence in those predictions increases.
-
-Once we calculate the loss, we'll update the parameters in order to minimize the loss. We will acheive this through gradient descent. Here is the equation:
-<img width="411" alt="Screenshot 2025-03-13 at 10 39 26 PM" src="https://github.com/user-attachments/assets/a4475322-77a8-4b19-a698-1b7ca90b4eae" />
-
 # Transformers!
 
 ## Why transformers? 
@@ -45,15 +14,15 @@ First, we must create **Key, Query, and Value vectors** out of the input embeddi
 
 At a high level, here's a description of each:
 
-**Query:** The token that we are comparing to every other token.
+**Query:** The selected token which we compare to every other token.
 **Key:** A measure of how relevant every other token is to our query. 
 **Value:** The actual information embedded in each token.
 
-We calculate these through these equations, where each W is a parameter matrix. It is initialized randomly, and learns over time like a traditional NN. 
+These are calculated through the equations equations below, where each W is a parameter matrix. It is initialized randomly, and learns over time like a traditional NN. 
 
 <img width="374" alt="Screenshot 2025-04-09 at 12 15 53 PM" src="https://github.com/user-attachments/assets/8ca2be76-ca8b-444f-a4d2-abd79c3af5cc" />
 
-**Now, we take the dot product of the query vector with every key vector** This gives us an attention score, or how token _i_ should play attention to token _j_. Since every query is multiplied with every key, this is why transformers, given enough compute, have an infinite reference window!.
+**Now, we take the dot product of the query vector with every key vector** This gives us an attention score, or how token _i_ should play attention to token _j_. Since every query is multiplied with every key, this is why transformers, given unlimited compute, have an infinite reference window!
 
 In order to ensure we don't have the exploding/vanishing gradient issue, we'll do a little bit of normalization. We divide the query/key dot product by the square root of the dimensions, and take a softmax of this result to ensure the attention scores are normalized between 0 - 1. 
 
