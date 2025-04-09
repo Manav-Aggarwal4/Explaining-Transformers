@@ -22,7 +22,7 @@ These are calculated through the equations equations below, where each W is a pa
 
 <img width="374" alt="Screenshot 2025-04-09 at 12 15 53 PM" src="https://github.com/user-attachments/assets/8ca2be76-ca8b-444f-a4d2-abd79c3af5cc" />
 
-**Now, we take the dot product of the query vector with every key vector** This gives us an attention score, or how token _i_ should play attention to token _j_. Since every query is multiplied with every key, this is why transformers, given unlimited compute, have an infinite reference window!
+**Now, we take the dot product of the query vector with every key vector**. This gives us an attention score, or how token _i_ should play attention to token _j_. Since every query is multiplied with every key, this is why transformers, given unlimited compute, have an infinite reference window!
 
 In order to ensure we don't have the exploding/vanishing gradient issue, we'll do a little bit of normalization. We divide the query/key dot product by the square root of the dimensions, and take a softmax of this result to ensure the attention scores are normalized between 0 - 1. 
 
