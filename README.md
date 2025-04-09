@@ -53,5 +53,33 @@ We calculate these through these equations, where each W is a parameter matrix. 
 
 <img width="374" alt="Screenshot 2025-04-09 at 12 15 53 PM" src="https://github.com/user-attachments/assets/8ca2be76-ca8b-444f-a4d2-abd79c3af5cc" />
 
+**Now, we dot product the query vector with every key vector** This gives us an attention score, or how token _i_ should play attention to token _j_. Since every query is multiplied with every key, this is why transformers, given enough compute, have an infinite reference window!.
+
+In order to ensure we don't have the exploding/vanishing gradient issue, we'll do a little bit of normalization. We divide the query/key dot product by the square root of the dimensions, and take a softmax of this result to ensure the attention scores are normalized between 0 - 1. 
+
+So far, we've reviewed everything in the single-head attention equation except for "V":
+
+![image](https://github.com/user-attachments/assets/6b2ea70d-1d0b-40b0-b49a-3955229fe8a2)  
+
+Now that we have a probability distribution (thanks to softmax) over every query-key pair, we must involve the actual content of each word by using the value vector we made earlier. Each token uses its attention distribution to perform a **weighted sum** over all the value vectors in the sequence. In other words, every token builds a new, context-aware representation by gathering information from all other tokens, weighted by how much attention it pays to them. Again, this is matrix multiplication 😄.
+
+We're done! Let's apply this to multi-head attention!
+
+# Multi-Head Attention
+
+We'll now apply our knowledge of single-head attention to what Transformers actually use in practice.
+
+Instead of doing just one single-head attention, we do multiple heads in parallel, each with its own learned Q, K, V projection matrices. Each head is of smaller dimension, and so it's able to focus on different aspects of the relationships between words because each head can focus on a different subspace of the input representation. A simplified example of this is that we have 4 heads where each one is reduced to work in the syntax, tone, diction, and punctation dimensions. This would allow each head to focus on that specific aspect alone.
+
+After each head independently produces its own output, the outputs are concatenated and passed through a final linear layer to produce the full attention output. This allows the model to combine multiple perspectives of the text to form rich, context-aware representation for each token.
+
+So, in essence, **multi-head attention = several single-head attentions**, each with its own perspective.
+
+
+# Overall Architecture:
+
+Attention is the most dense and important feature of transformers, but for the sake of completion, I will review the entire pipeline from _Attention is All You Need_.
+
+![image](https://github.com/user-attachments/assets/1c635b42-70bc-44dd-8598-9544ade81ffe)
 
 
